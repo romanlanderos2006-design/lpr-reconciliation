@@ -1,0 +1,700 @@
+[
+  {
+    "plate": "DEF456",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.88,
+    "source": "manual",
+    "amount_due": null,
+    "matched_record": {
+      "plate": "DEF456",
+      "status": "UNPAID",
+      "amount": 0.0,
+      "paid_at": "",
+      "lot_id": "LOT-3"
+    },
+    "detail": "payment record found but status is 'UNPAID', not PAID",
+    "reconciled_at": "2026-07-20T04:02:02.720905Z"
+  },
+  {
+    "plate": "LME105",
+    "status": "REJECTED_LOW_CONFIDENCE",
+    "confidence": 0.55,
+    "source": "manual",
+    "amount_due": null,
+    "matched_record": null,
+    "detail": "rejected before reconciliation: Value error, confidence 0.550 is below the minimum accepted threshold of 0.75",
+    "reconciled_at": "2026-07-20T04:02:07.548685Z"
+  },
+  {
+    "plate": "ABC123",
+    "status": "PAID_VALID",
+    "confidence": 0.95,
+    "source": "manual",
+    "amount_due": 15.5,
+    "matched_record": {
+      "plate": "ABC123",
+      "status": "PAID",
+      "amount": 15.5,
+      "paid_at": "2026-07-19T08:02:11Z",
+      "lot_id": "LOT-1"
+    },
+    "detail": "payment record found and marked PAID",
+    "reconciled_at": "2026-07-20T04:02:15.866400Z"
+  },
+  {
+    "plate": "DEF456",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.88,
+    "source": "manual",
+    "amount_due": null,
+    "matched_record": {
+      "plate": "DEF456",
+      "status": "UNPAID",
+      "amount": 0.0,
+      "paid_at": "",
+      "lot_id": "LOT-3"
+    },
+    "detail": "payment record found but status is 'UNPAID', not PAID",
+    "reconciled_at": "2026-07-20T04:02:16.874751Z"
+  },
+  {
+    "plate": "DEF456",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.88,
+    "source": "manual",
+    "amount_due": null,
+    "matched_record": {
+      "plate": "DEF456",
+      "status": "UNPAID",
+      "amount": 0.0,
+      "paid_at": "",
+      "lot_id": "LOT-3"
+    },
+    "detail": "payment record found but status is 'UNPAID', not PAID",
+    "reconciled_at": "2026-07-20T04:02:17.072167Z"
+  },
+  {
+    "plate": "ABC123",
+    "status": "PAID_VALID",
+    "confidence": 0.95,
+    "source": "manual",
+    "amount_due": 15.5,
+    "matched_record": {
+      "plate": "ABC123",
+      "status": "PAID",
+      "amount": 15.5,
+      "paid_at": "2026-07-19T08:02:11Z",
+      "lot_id": "LOT-1"
+    },
+    "detail": "payment record found and marked PAID",
+    "reconciled_at": "2026-07-20T04:02:17.232403Z"
+  },
+  {
+    "plate": "ABC123",
+    "status": "PAID_VALID",
+    "confidence": 0.95,
+    "source": "manual",
+    "amount_due": 15.5,
+    "matched_record": {
+      "plate": "ABC123",
+      "status": "PAID",
+      "amount": 15.5,
+      "paid_at": "2026-07-19T08:02:11Z",
+      "lot_id": "LOT-1"
+    },
+    "detail": "payment record found and marked PAID",
+    "reconciled_at": "2026-07-20T04:02:17.426415Z"
+  },
+  {
+    "plate": "BZO620",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.93,
+    "source": "manual",
+    "amount_due": null,
+    "matched_record": null,
+    "detail": "no payment record found for this plate",
+    "reconciled_at": "2026-07-20T04:02:17.598434Z"
+  },
+  {
+    "plate": "ABC123",
+    "status": "PAID_VALID",
+    "confidence": 0.95,
+    "source": "manual",
+    "amount_due": 15.5,
+    "matched_record": {
+      "plate": "ABC123",
+      "status": "PAID",
+      "amount": 15.5,
+      "paid_at": "2026-07-19T08:02:11Z",
+      "lot_id": "LOT-1"
+    },
+    "detail": "payment record found and marked PAID",
+    "reconciled_at": "2026-07-20T04:02:17.779034Z"
+  },
+  {
+    "plate": "DEF456",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.88,
+    "source": "manual",
+    "amount_due": null,
+    "matched_record": {
+      "plate": "DEF456",
+      "status": "UNPAID",
+      "amount": 0.0,
+      "paid_at": "",
+      "lot_id": "LOT-3"
+    },
+    "detail": "payment record found but status is 'UNPAID', not PAID",
+    "reconciled_at": "2026-07-20T04:02:17.959662Z"
+  },
+  {
+    "plate": "OXZ927",
+    "status": "REJECTED_LOW_CONFIDENCE",
+    "confidence": 0.55,
+    "source": "manual",
+    "amount_due": null,
+    "matched_record": null,
+    "detail": "rejected before reconciliation: Value error, confidence 0.550 is below the minimum accepted threshold of 0.75",
+    "reconciled_at": "2026-07-20T04:08:48.103127Z"
+  },
+  {
+    "plate": "VFY354",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.93,
+    "source": "manual",
+    "amount_due": null,
+    "matched_record": null,
+    "detail": "no payment record found for this plate",
+    "reconciled_at": "2026-07-20T04:08:49.000030Z"
+  },
+  {
+    "plate": "KSY090",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.93,
+    "source": "manual",
+    "amount_due": null,
+    "matched_record": null,
+    "detail": "no payment record found for this plate",
+    "reconciled_at": "2026-07-20T04:08:49.679977Z"
+  },
+  {
+    "plate": "DEF456",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.88,
+    "source": "manual",
+    "amount_due": null,
+    "matched_record": {
+      "plate": "DEF456",
+      "status": "UNPAID",
+      "amount": 0.0,
+      "paid_at": "",
+      "lot_id": "LOT-3"
+    },
+    "detail": "payment record found but status is 'UNPAID', not PAID",
+    "reconciled_at": "2026-07-20T04:08:50.267343Z"
+  },
+  {
+    "plate": "DEF456",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.88,
+    "source": "manual",
+    "amount_due": null,
+    "matched_record": {
+      "plate": "DEF456",
+      "status": "UNPAID",
+      "amount": 0.0,
+      "paid_at": "",
+      "lot_id": "LOT-3"
+    },
+    "detail": "payment record found but status is 'UNPAID', not PAID",
+    "reconciled_at": "2026-07-20T04:08:50.926066Z"
+  },
+  {
+    "plate": "ABC123",
+    "status": "PAID_VALID",
+    "confidence": 0.95,
+    "source": "manual",
+    "amount_due": 15.5,
+    "matched_record": {
+      "plate": "ABC123",
+      "status": "PAID",
+      "amount": 15.5,
+      "paid_at": "2026-07-19T08:02:11Z",
+      "lot_id": "LOT-1"
+    },
+    "detail": "payment record found and marked PAID",
+    "reconciled_at": "2026-07-20T04:08:51.578996Z"
+  },
+  {
+    "plate": "ABC123",
+    "status": "PAID_VALID",
+    "confidence": 0.95,
+    "source": "manual",
+    "amount_due": 15.5,
+    "matched_record": {
+      "plate": "ABC123",
+      "status": "PAID",
+      "amount": 15.5,
+      "paid_at": "2026-07-19T08:02:11Z",
+      "lot_id": "LOT-1"
+    },
+    "detail": "payment record found and marked PAID",
+    "reconciled_at": "2026-07-20T04:08:52.166863Z"
+  },
+  {
+    "plate": "3A0BDUT",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.987,
+    "source": "external_api",
+    "amount_due": null,
+    "matched_record": null,
+    "detail": "no payment record found for this plate",
+    "reconciled_at": "2026-07-20T04:22:58.016197Z"
+  },
+  {
+    "plate": "3A0BDUT",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.987,
+    "source": "external_api",
+    "location_metadata": "North Gate - Level 2",
+    "amount_due": null,
+    "matched_record": null,
+    "detail": "no payment record found for this plate",
+    "reconciled_at": "2026-07-20T04:43:05.691155Z"
+  },
+  {
+    "plate": "3A0BDUR",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.905,
+    "source": "external_api",
+    "location_metadata": "North Gate - Level 2",
+    "amount_due": null,
+    "matched_record": null,
+    "detail": "no payment record found for this plate",
+    "reconciled_at": "2026-07-20T04:43:05.693993Z"
+  },
+  {
+    "plate": "3A0BDUT",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.987,
+    "source": "external_api",
+    "location_metadata": "North Gate - Level 2",
+    "amount_due": null,
+    "matched_record": null,
+    "detail": "no payment record found for this plate",
+    "reconciled_at": "2026-07-20T04:43:39.109749Z"
+  },
+  {
+    "plate": "3A0BDUR",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.905,
+    "source": "external_api",
+    "location_metadata": "North Gate - Level 2",
+    "amount_due": null,
+    "matched_record": null,
+    "detail": "no payment record found for this plate",
+    "reconciled_at": "2026-07-20T04:43:39.112423Z"
+  },
+  {
+    "plate": "GHOST1",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.99,
+    "source": "external_api",
+    "location_metadata": "North Gate - Level 2",
+    "bounding_box": null,
+    "amount_due": null,
+    "matched_record": null,
+    "detail": "no payment record found for this plate",
+    "reconciled_at": "2026-07-20T04:58:29.844178Z"
+  },
+  {
+    "plate": "ABC123",
+    "status": "PAID_VALID",
+    "confidence": 0.94,
+    "source": "external_api",
+    "location_metadata": "North Gate - Level 2",
+    "bounding_box": {
+      "xmin": 10.0,
+      "ymin": 20.0,
+      "xmax": 210.0,
+      "ymax": 90.0
+    },
+    "amount_due": 15.5,
+    "matched_record": {
+      "plate": "ABC123",
+      "status": "PAID",
+      "amount": 15.5,
+      "paid_at": "2026-07-19T08:02:11Z",
+      "lot_id": "LOT-1"
+    },
+    "detail": "payment record found and marked PAID",
+    "reconciled_at": "2026-07-20T04:58:29.846963Z"
+  },
+  {
+    "plate": "DEF456",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.81,
+    "source": "external_api",
+    "location_metadata": "North Gate - Level 2",
+    "bounding_box": {
+      "xmin": 300.0,
+      "ymin": 40.0,
+      "xmax": 460.0,
+      "ymax": 110.0
+    },
+    "amount_due": null,
+    "matched_record": {
+      "plate": "DEF456",
+      "status": "UNPAID",
+      "amount": 0.0,
+      "paid_at": "",
+      "lot_id": "LOT-3"
+    },
+    "detail": "payment record found but status is 'UNPAID', not PAID",
+    "reconciled_at": "2026-07-20T04:58:29.849322Z"
+  },
+  {
+    "plate": "GHOST1",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.99,
+    "source": "external_api",
+    "location_metadata": "North Gate - Level 2",
+    "bounding_box": null,
+    "amount_due": null,
+    "matched_record": null,
+    "detail": "no payment record found for this plate",
+    "reconciled_at": "2026-07-20T05:01:06.138302Z"
+  },
+  {
+    "plate": "ABC123",
+    "status": "PAID_VALID",
+    "confidence": 0.94,
+    "source": "external_api",
+    "location_metadata": "North Gate - Level 2",
+    "bounding_box": {
+      "xmin": 10.0,
+      "ymin": 20.0,
+      "xmax": 210.0,
+      "ymax": 90.0
+    },
+    "amount_due": 15.5,
+    "matched_record": {
+      "plate": "ABC123",
+      "status": "PAID",
+      "amount": 15.5,
+      "paid_at": "2026-07-19T08:02:11Z",
+      "lot_id": "LOT-1"
+    },
+    "detail": "payment record found and marked PAID",
+    "reconciled_at": "2026-07-20T05:01:06.140828Z"
+  },
+  {
+    "plate": "DEF456",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.81,
+    "source": "external_api",
+    "location_metadata": "North Gate - Level 2",
+    "bounding_box": {
+      "xmin": 300.0,
+      "ymin": 40.0,
+      "xmax": 460.0,
+      "ymax": 110.0
+    },
+    "amount_due": null,
+    "matched_record": {
+      "plate": "DEF456",
+      "status": "UNPAID",
+      "amount": 0.0,
+      "paid_at": "",
+      "lot_id": "LOT-3"
+    },
+    "detail": "payment record found but status is 'UNPAID', not PAID",
+    "reconciled_at": "2026-07-20T05:01:06.144772Z"
+  },
+  {
+    "plate": "GHOST1",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.99,
+    "source": "external_api",
+    "location_metadata": "North Gate - Level 2",
+    "bounding_box": null,
+    "amount_due": null,
+    "matched_record": null,
+    "detail": "no payment record found for this plate",
+    "reconciled_at": "2026-07-20T05:04:08.498433Z"
+  },
+  {
+    "plate": "ABC123",
+    "status": "PAID_VALID",
+    "confidence": 0.94,
+    "source": "external_api",
+    "location_metadata": "North Gate - Level 2",
+    "bounding_box": {
+      "xmin": 10.0,
+      "ymin": 20.0,
+      "xmax": 210.0,
+      "ymax": 90.0
+    },
+    "amount_due": 15.5,
+    "matched_record": {
+      "plate": "ABC123",
+      "status": "PAID",
+      "amount": 15.5,
+      "paid_at": "2026-07-19T08:02:11Z",
+      "lot_id": "LOT-1"
+    },
+    "detail": "payment record found and marked PAID",
+    "reconciled_at": "2026-07-20T05:04:08.500859Z"
+  },
+  {
+    "plate": "DEF456",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.81,
+    "source": "external_api",
+    "location_metadata": "North Gate - Level 2",
+    "bounding_box": {
+      "xmin": 300.0,
+      "ymin": 40.0,
+      "xmax": 460.0,
+      "ymax": 110.0
+    },
+    "amount_due": null,
+    "matched_record": {
+      "plate": "DEF456",
+      "status": "UNPAID",
+      "amount": 0.0,
+      "paid_at": "",
+      "lot_id": "LOT-3"
+    },
+    "detail": "payment record found but status is 'UNPAID', not PAID",
+    "reconciled_at": "2026-07-20T05:04:08.503767Z"
+  },
+  {
+    "plate": "GHOST1",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.99,
+    "source": "external_api",
+    "location_metadata": "North Gate - Level 2",
+    "bounding_box": null,
+    "amount_due": null,
+    "matched_record": null,
+    "detail": "no payment record found for this plate",
+    "reconciled_at": "2026-07-20T05:06:29.646604Z"
+  },
+  {
+    "plate": "ABC123",
+    "status": "PAID_VALID",
+    "confidence": 0.94,
+    "source": "external_api",
+    "location_metadata": "North Gate - Level 2",
+    "bounding_box": {
+      "xmin": 10.0,
+      "ymin": 20.0,
+      "xmax": 210.0,
+      "ymax": 90.0
+    },
+    "amount_due": 15.5,
+    "matched_record": {
+      "plate": "ABC123",
+      "status": "PAID",
+      "amount": 15.5,
+      "paid_at": "2026-07-19T08:02:11Z",
+      "lot_id": "LOT-1"
+    },
+    "detail": "payment record found and marked PAID",
+    "reconciled_at": "2026-07-20T05:06:29.648937Z"
+  },
+  {
+    "plate": "DEF456",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.81,
+    "source": "external_api",
+    "location_metadata": "North Gate - Level 2",
+    "bounding_box": {
+      "xmin": 300.0,
+      "ymin": 40.0,
+      "xmax": 460.0,
+      "ymax": 110.0
+    },
+    "amount_due": null,
+    "matched_record": {
+      "plate": "DEF456",
+      "status": "UNPAID",
+      "amount": 0.0,
+      "paid_at": "",
+      "lot_id": "LOT-3"
+    },
+    "detail": "payment record found but status is 'UNPAID', not PAID",
+    "reconciled_at": "2026-07-20T05:06:29.652217Z"
+  },
+  {
+    "plate": "3A0BDUT",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.987,
+    "source": "external_api",
+    "location_metadata": "North Gate - Level 2",
+    "bounding_box": {
+      "xmin": 359.0,
+      "ymin": 1397.0,
+      "xmax": 737.0,
+      "ymax": 1582.0
+    },
+    "amount_due": null,
+    "matched_record": null,
+    "detail": "no payment record found for this plate",
+    "reconciled_at": "2026-07-20T05:10:57.723738Z"
+  },
+  {
+    "plate": "3A0BDUR",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.905,
+    "source": "external_api",
+    "location_metadata": "North Gate - Level 2",
+    "bounding_box": {
+      "xmin": 2823.0,
+      "ymin": 1048.0,
+      "xmax": 3115.0,
+      "ymax": 1203.0
+    },
+    "amount_due": null,
+    "matched_record": null,
+    "detail": "no payment record found for this plate",
+    "reconciled_at": "2026-07-20T05:10:57.728511Z"
+  },
+  {
+    "plate": "3A0BDUT",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.987,
+    "source": "external_api",
+    "location_metadata": "South Gate - Level 1",
+    "bounding_box": {
+      "xmin": 359.0,
+      "ymin": 1397.0,
+      "xmax": 737.0,
+      "ymax": 1582.0
+    },
+    "amount_due": null,
+    "matched_record": null,
+    "detail": "no payment record found for this plate",
+    "reconciled_at": "2026-07-20T05:11:15.262732Z"
+  },
+  {
+    "plate": "3A0BDUR",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.905,
+    "source": "external_api",
+    "location_metadata": "South Gate - Level 1",
+    "bounding_box": {
+      "xmin": 2823.0,
+      "ymin": 1048.0,
+      "xmax": 3115.0,
+      "ymax": 1203.0
+    },
+    "amount_due": null,
+    "matched_record": null,
+    "detail": "no payment record found for this plate",
+    "reconciled_at": "2026-07-20T05:11:15.265350Z"
+  },
+  {
+    "plate": "3A0BDUT",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.987,
+    "source": "external_api",
+    "location_metadata": "East Exit - Street Level",
+    "bounding_box": {
+      "xmin": 359.0,
+      "ymin": 1397.0,
+      "xmax": 737.0,
+      "ymax": 1582.0
+    },
+    "amount_due": null,
+    "matched_record": null,
+    "detail": "no payment record found for this plate",
+    "reconciled_at": "2026-07-20T05:12:08.980556Z"
+  },
+  {
+    "plate": "3A0BDUR",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.905,
+    "source": "external_api",
+    "location_metadata": "East Exit - Street Level",
+    "bounding_box": {
+      "xmin": 2823.0,
+      "ymin": 1048.0,
+      "xmax": 3115.0,
+      "ymax": 1203.0
+    },
+    "amount_due": null,
+    "matched_record": null,
+    "detail": "no payment record found for this plate",
+    "reconciled_at": "2026-07-20T05:12:08.985773Z"
+  },
+  {
+    "plate": "3A0BDUT",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.987,
+    "source": "external_api",
+    "location_metadata": "North Gate - Level 2",
+    "bounding_box": {
+      "xmin": 359.0,
+      "ymin": 1397.0,
+      "xmax": 737.0,
+      "ymax": 1582.0
+    },
+    "amount_due": null,
+    "matched_record": null,
+    "detail": "no payment record found for this plate",
+    "reconciled_at": "2026-07-20T05:30:10.264257Z"
+  },
+  {
+    "plate": "3A0BDUR",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.905,
+    "source": "external_api",
+    "location_metadata": "North Gate - Level 2",
+    "bounding_box": {
+      "xmin": 2823.0,
+      "ymin": 1048.0,
+      "xmax": 3115.0,
+      "ymax": 1203.0
+    },
+    "amount_due": null,
+    "matched_record": null,
+    "detail": "no payment record found for this plate",
+    "reconciled_at": "2026-07-20T05:30:10.267476Z"
+  },
+  {
+    "plate": "3A0BDUT",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.987,
+    "source": "external_api",
+    "location_metadata": "East Exit - Street Level",
+    "bounding_box": {
+      "xmin": 359.0,
+      "ymin": 1397.0,
+      "xmax": 737.0,
+      "ymax": 1582.0
+    },
+    "amount_due": null,
+    "matched_record": null,
+    "detail": "no payment record found for this plate",
+    "reconciled_at": "2026-07-20T05:30:29.884419Z"
+  },
+  {
+    "plate": "3A0BDUR",
+    "status": "UNPAID_DRIVE_OFF",
+    "confidence": 0.905,
+    "source": "external_api",
+    "location_metadata": "East Exit - Street Level",
+    "bounding_box": {
+      "xmin": 2823.0,
+      "ymin": 1048.0,
+      "xmax": 3115.0,
+      "ymax": 1203.0
+    },
+    "amount_due": null,
+    "matched_record": null,
+    "detail": "no payment record found for this plate",
+    "reconciled_at": "2026-07-20T05:30:29.887236Z"
+  }
+]

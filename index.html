@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LPR &amp; Revenue Reconciliation Console</title>
+
+<!--
+  Tailwind via the Play CDN, as requested. This ships a JIT compiler to the browser and is
+  NOT recommended for production (it will log a console warning to that effect) -- the
+  production path is a Tailwind CLI/PostCSS build step, which is out of scope for this
+  scaffold's dashboard.
+-->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          panel: "#12151c",
+          panel2: "#171b24",
+          border: "#242938",
+        },
+      },
+    },
+  };
+</script>
+</head>
+<body class="bg-[#0a0c11] text-slate-200 min-h-screen font-sans antialiased">
+
+  <div class="max-w-6xl mx-auto px-6 py-8">
+
+    <!-- Header -->
+    <header class="flex flex-wrap items-center justify-between gap-4 mb-8">
+      <div>
+        <h1 class="text-2xl md:text-3xl font-bold tracking-tight text-white">
+          LPR &amp; Revenue Reconciliation Console
+        </h1>
+        <p class="text-sm text-slate-500 mt-1">
+          Multi-vehicle PlateRecognizer upload &middot; location-aware reconciliation
+        </p>
+      </div>
+
+      <div id="conn-pill" class="flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-full bg-panel2 border border-border">
+        <span id="conn-dot" class="w-2 h-2 rounded-full bg-slate-500"></span>
+        <span id="conn-text">Connecting&hellip;</span>
+      </div>
+    </header>
+
+    <!-- Location selector + Drag-and-drop upload zone -->
+    <section class="mb-6 space-y-3">
+      <div class="flex flex-wrap items-center gap-3">
+        <label for="location-select" class="text-xs uppercase tracking-wide text-slate-500">
+          Scan location
+        </label>
+        <select
+          id="location-select"
+          class="bg-panel2 border border-border rounded-lg text-sm text-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+        >
+          <option value="North Gate - Level 2" selected>North Gate - Level 2</option>
+          <option value="South Gate - Level 1">South Gate - Level 1</option>
+          <option value="East Exit - Street Level">East Exit - Street Level</option>
+          <option value="West Entrance - Garage B">West Entrance - Garage B</option>
+        </select>
+      </div>
+
+      <div
+        id="drop-zone"
+        class="relative rounded-xl border-2 border-dashed border-slate-600 bg-panel hover:border-emerald-500/60 hover:bg-panel2/40 transition-colors cursor-pointer px-6 py-10 text-center"
+        role="button"
+        tabindex="0"
+        aria-label="Drop an image or click to upload a license plate photo"
+      >
+        <input
+          id="file-input"
+          type="file"
+          accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
+          class="hidden"
+        />
+
+        <div id="drop-idle" class="space-y-3">
+          <div class="mx-auto w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center">
+            <svg class="w-6 h-6 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+            </svg>
+          </div>
+          <p class="text-base font-medium text-slate-200">
+            Drag &amp; drop a plate image here
+          </p>
+          <p class="text-sm text-slate-500">
+            or <span class="text-emerald-400 font-medium">click to browse</span> &middot; multi-vehicle images supported &middot; JPEG/PNG/WEBP &middot; max 8&nbsp;MB
+          </p>
+        </div>
+
+        <div id="drop-loading" class="hidden space-y-3">
+          <div class="mx-auto w-10 h-10 border-2 border-emerald-400/30 border-t-emerald-400 rounded-full animate-spin"></div>
+          <p id="loading-text" class="text-base font-medium text-emerald-300">Analyzing Image&hellip;</p>
+          <p id="loading-filename" class="text-sm text-slate-500 truncate max-w-md mx-auto"></p>
+        </div>
+      </div>
+
+      <div
+        id="upload-error"
+        class="hidden mt-3 rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-300"
+        role="alert"
+      ></div>
+
+      <div
+        id="upload-success"
+        class="hidden mt-3 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300"
+        role="status"
+      ></div>
+    </section>
+
+    <!-- Summary cards -->
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <div class="bg-panel border border-border rounded-xl p-4">
+        <p class="text-xs uppercase tracking-wide text-slate-500">Total Scans</p>
+        <p id="stat-total" class="text-2xl font-bold text-white mt-1">&mdash;</p>
+      </div>
+      <div class="bg-panel border border-border rounded-xl p-4">
+        <p class="text-xs uppercase tracking-wide text-slate-500">Paid &amp; Valid</p>
+        <p id="stat-paid" class="text-2xl font-bold text-emerald-400 mt-1">&mdash;</p>
+      </div>
+      <div class="bg-panel border border-border rounded-xl p-4">
+        <p class="text-xs uppercase tracking-wide text-slate-500">Drive-Offs</p>
+        <p id="stat-unpaid" class="text-2xl font-bold text-red-400 mt-1">&mdash;</p>
+      </div>
+      <div class="bg-panel border border-border rounded-xl p-4">
+        <p class="text-xs uppercase tracking-wide text-slate-500">Rejected Reads</p>
+        <p id="stat-rejected" class="text-2xl font-bold text-amber-400 mt-1">&mdash;</p>
+      </div>
+    </section>
+
+    <!-- Live ledger table -->
+    <section class="bg-panel border border-border rounded-xl overflow-hidden">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-border">
+        <h2 class="text-sm font-semibold text-slate-300">Reconciliation Ledger</h2>
+        <span class="text-xs text-slate-500">Polling every 2s &middot; showing latest <span id="row-limit-label">100</span></span>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left text-xs uppercase tracking-wide text-slate-500 border-b border-border">
+              <th class="px-5 py-3 font-medium">Timestamp</th>
+              <th class="px-5 py-3 font-medium">Plate</th>
+              <th class="px-5 py-3 font-medium">Status</th>
+              <th class="px-5 py-3 font-medium">Location</th>
+              <th class="px-5 py-3 font-medium">Confidence</th>
+              <th class="px-5 py-3 font-medium">Source</th>
+              <th class="px-5 py-3 font-medium">Amount Due</th>
+              <th class="px-5 py-3 font-medium">Detail</th>
+            </tr>
+          </thead>
+          <tbody id="ledger-body" class="divide-y divide-border">
+            <!-- rows injected by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <div id="empty-state" class="hidden px-5 py-10 text-center text-slate-500 text-sm">
+        No scans yet. Drop a plate image above to run a live recognition.
+      </div>
+    </section>
+
+    <footer class="text-xs text-slate-600 mt-6">
+      Multi-vehicle PlateRecognizer pipeline &middot; each detected plate is reconciled and stamped with location metadata.
+    </footer>
+  </div>
+
+  <!-- Visual Evidence modal: hidden by default, closes via X, backdrop click, or Escape -->
+  <div
+    id="evidence-modal"
+    class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="evidence-modal-title"
+  >
+    <div class="bg-panel border border-border rounded-xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-border shrink-0">
+        <h3 id="evidence-modal-title" class="text-sm font-semibold text-slate-200">
+          Visual Evidence &middot; <span id="evidence-modal-plate" class="font-mono text-emerald-400">&mdash;</span>
+        </h3>
+        <button
+          id="evidence-modal-close"
+          type="button"
+          aria-label="Close visual evidence"
+          class="text-slate-400 hover:text-white hover:bg-panel2 rounded-lg p-1.5 transition-colors"
+        >
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="p-4 flex-1 overflow-auto flex items-center justify-center bg-black/40">
+        <canvas id="evidence-canvas" class="rounded-lg"></canvas>
+        <p id="evidence-modal-error" class="hidden text-sm text-red-300 text-center max-w-sm">
+          Could not load the stored image for this scan.
+        </p>
+      </div>
+
+      <div class="px-5 py-3 border-t border-border text-xs text-slate-500 shrink-0">
+        Darkened region rendered on a client-side canvas &middot; spotlight matches the vendor's reported plate bounding box.
+      </div>
+    </div>
+  </div>
+
+<script>
+(function () {
+  "use strict";
+
+  const API_BASE = window.location.origin;
+  const LEDGER_URL = `${API_BASE}/api/v1/ledger?limit=100`;
+  const UPLOAD_URL = `${API_BASE}/api/v1/scan/upload`;
+  const POLL_INTERVAL_MS = 2000;
+  const MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
+  const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/jpg"]);
+
+  const el = {
+    connDot: document.getElementById("conn-dot"),
+    connText: document.getElementById("conn-text"),
+    dropZone: document.getElementById("drop-zone"),
+    fileInput: document.getElementById("file-input"),
+    locationSelect: document.getElementById("location-select"),
+    dropIdle: document.getElementById("drop-idle"),
+    dropLoading: document.getElementById("drop-loading"),
+    loadingFilename: document.getElementById("loading-filename"),
+    uploadError: document.getElementById("upload-error"),
+    uploadSuccess: document.getElementById("upload-success"),
+    tbody: document.getElementById("ledger-body"),
+    emptyState: document.getElementById("empty-state"),
+    statTotal: document.getElementById("stat-total"),
+    statPaid: document.getElementById("stat-paid"),
+    statUnpaid: document.getElementById("stat-unpaid"),
+    statRejected: document.getElementById("stat-rejected"),
+    evidenceModal: document.getElementById("evidence-modal"),
+    evidenceModalClose: document.getElementById("evidence-modal-close"),
+    evidenceModalPlate: document.getElementById("evidence-modal-plate"),
+    evidenceCanvas: document.getElementById("evidence-canvas"),
+    evidenceError: document.getElementById("evidence-modal-error"),
+  };
+
+  // Client-side store of uploaded images, keyed by `${plate}|${reconciled_at}` so a table
+  // row (from a later /api/v1/ledger poll) can be matched back to the exact File the user
+  // dropped for it. Each entry gets its OWN blob URL (see uploadFile below) so entries can
+  // be revoked independently without reference-counting shared URLs across plates that
+  // came from the same source image.
+  const imageStore = new Map();
+
+  function entryKey(entry) {
+    return `${entry.plate}|${entry.reconciled_at}`;
+  }
+
+  const STATUS_STYLES = {
+    PAID_VALID: "bg-emerald-500/10 text-emerald-400 ring-1 ring-inset ring-emerald-500/30",
+    UNPAID_DRIVE_OFF: "bg-red-500/10 text-red-400 ring-1 ring-inset ring-red-500/40 font-semibold",
+    REJECTED_LOW_CONFIDENCE: "bg-amber-500/10 text-amber-400 ring-1 ring-inset ring-amber-500/30",
+    REJECTED_INVALID_FORMAT: "bg-amber-500/10 text-amber-400 ring-1 ring-inset ring-amber-500/30",
+    ERROR: "bg-slate-500/10 text-slate-400 ring-1 ring-inset ring-slate-500/30",
+  };
+
+  let uploadInFlight = false;
+  let dragDepth = 0;
+
+  function setConnection(isLive) {
+    if (isLive) {
+      el.connDot.className = "w-2 h-2 rounded-full bg-emerald-400";
+      el.connText.textContent = "Live";
+    } else {
+      el.connDot.className = "w-2 h-2 rounded-full bg-red-400";
+      el.connText.textContent = "Disconnected";
+    }
+  }
+
+  function setLoading(isLoading, filename) {
+    uploadInFlight = isLoading;
+    el.dropIdle.classList.toggle("hidden", isLoading);
+    el.dropLoading.classList.toggle("hidden", !isLoading);
+    el.dropZone.classList.toggle("pointer-events-none", isLoading);
+    el.dropZone.classList.toggle("opacity-80", isLoading);
+    el.loadingFilename.textContent = filename || "";
+    el.fileInput.disabled = isLoading;
+    el.locationSelect.disabled = isLoading;
+  }
+
+  function showError(message) {
+    el.uploadSuccess.classList.add("hidden");
+    el.uploadError.textContent = message;
+    el.uploadError.classList.remove("hidden");
+  }
+
+  function showSuccess(message) {
+    el.uploadError.classList.add("hidden");
+    el.uploadSuccess.textContent = message;
+    el.uploadSuccess.classList.remove("hidden");
+  }
+
+  function clearBanners() {
+    el.uploadError.classList.add("hidden");
+    el.uploadSuccess.classList.add("hidden");
+    el.uploadError.textContent = "";
+    el.uploadSuccess.textContent = "";
+  }
+
+  function formatTimestamp(iso) {
+    try {
+      const d = new Date(iso);
+      return d.toLocaleString(undefined, {
+        month: "short", day: "2-digit",
+        hour: "2-digit", minute: "2-digit", second: "2-digit",
+      });
+    } catch {
+      return iso ?? "";
+    }
+  }
+
+  function formatAmount(amount) {
+    if (amount === null || amount === undefined) return "\u2014";
+    return `$${Number(amount).toFixed(2)}`;
+  }
+
+  function statusLabel(status) {
+    if (status === "PAID_VALID") return "PAID";
+    if (status === "UNPAID_DRIVE_OFF") return "UNPAID";
+    return status || "unknown";
+  }
+
+  function formatMultiVehicleBanner(results) {
+    const parts = results.map((r) => {
+      const plate = r.plate || "unknown";
+      return `${plate} \u2192 ${statusLabel(r.status)}`;
+    });
+    const location = (results[0] && results[0].location_metadata) || "Unknown";
+    return `Recognized: ${parts.join(", ")} @ ${location}`;
+  }
+
+  function td(content, extraClasses) {
+    const cell = document.createElement("td");
+    cell.className = `px-5 py-3 whitespace-nowrap ${extraClasses || ""}`;
+    if (content instanceof Node) {
+      cell.appendChild(content);
+    } else {
+      // textContent only — never innerHTML (XSS defense for free-form detail/location).
+      cell.textContent = content;
+    }
+    return cell;
+  }
+
+  function statusBadge(status) {
+    const span = document.createElement("span");
+    const styles = STATUS_STYLES[status] || "bg-slate-500/10 text-slate-400 ring-1 ring-inset ring-slate-500/30";
+    span.className = `inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium ${styles}`;
+    span.textContent = status;
+    return span;
+  }
+
+  function buildDetailCell(entry) {
+    const cell = document.createElement("td");
+    cell.className = "px-5 py-3 text-slate-500 text-xs max-w-xs";
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "flex items-center gap-2";
+
+    const detailSpan = document.createElement("span");
+    detailSpan.className = "truncate";
+    detailSpan.textContent = entry.detail || ""; // textContent only — XSS defense
+    wrapper.appendChild(detailSpan);
+
+    // Only offer "View" when both a bounding box AND a locally-stored image exist for
+    // this exact row — missing either degrades silently rather than showing a dead button.
+    const key = entryKey(entry);
+    if (entry.bounding_box && imageStore.has(key)) {
+      // Built entirely via DOM APIs (createElementNS + textContent) rather than innerHTML,
+      // consistent with the rest of the table even though this particular icon markup is
+      // a fixed constant, not interpolated data.
+      const viewBtn = document.createElement("button");
+      viewBtn.type = "button";
+      viewBtn.className =
+        "shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium " +
+        "bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 ring-1 ring-inset ring-emerald-500/30 transition-colors";
+
+      const svgNS = "http://www.w3.org/2000/svg";
+      const icon = document.createElementNS(svgNS, "svg");
+      icon.setAttribute("viewBox", "0 0 24 24");
+      icon.setAttribute("fill", "none");
+      icon.setAttribute("stroke", "currentColor");
+      icon.setAttribute("stroke-width", "2");
+      icon.setAttribute("class", "w-3.5 h-3.5");
+      const path1 = document.createElementNS(svgNS, "path");
+      path1.setAttribute("stroke-linecap", "round");
+      path1.setAttribute("stroke-linejoin", "round");
+      path1.setAttribute(
+        "d",
+        "M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+      );
+      const path2 = document.createElementNS(svgNS, "path");
+      path2.setAttribute("stroke-linecap", "round");
+      path2.setAttribute("stroke-linejoin", "round");
+      path2.setAttribute("d", "M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z");
+      icon.appendChild(path1);
+      icon.appendChild(path2);
+
+      viewBtn.appendChild(icon);
+      viewBtn.appendChild(document.createTextNode("View"));
+      viewBtn.addEventListener("click", (event) => {
+        event.stopPropagation();
+        openEvidenceModal(imageStore.get(key), entry.bounding_box, entry.plate);
+      });
+      wrapper.appendChild(viewBtn);
+    }
+
+    cell.appendChild(wrapper);
+    return cell;
+  }
+
+  function renderRow(entry) {
+    const tr = document.createElement("tr");
+    tr.className = "hover:bg-panel2/60 transition-colors";
+
+    tr.appendChild(td(formatTimestamp(entry.reconciled_at), "text-slate-400 text-xs"));
+    tr.appendChild(td(entry.plate || "\u2014", "font-mono text-slate-100"));
+    tr.appendChild(td(statusBadge(entry.status)));
+    tr.appendChild(td(entry.location_metadata || "Unknown", "text-slate-300 text-xs"));
+    tr.appendChild(td(`${Math.round((entry.confidence ?? 0) * 100)}%`, "text-slate-400"));
+    tr.appendChild(td(entry.source || "\u2014", "text-slate-500 text-xs uppercase"));
+    tr.appendChild(td(formatAmount(entry.amount_due), "text-slate-300"));
+    tr.appendChild(buildDetailCell(entry));
+
+    return tr;
+  }
+
+  function renderStats(entries) {
+    const counts = { PAID_VALID: 0, UNPAID_DRIVE_OFF: 0, rejected: 0 };
+    for (const e of entries) {
+      if (e.status === "PAID_VALID") counts.PAID_VALID += 1;
+      else if (e.status === "UNPAID_DRIVE_OFF") counts.UNPAID_DRIVE_OFF += 1;
+      else if (e.status === "REJECTED_LOW_CONFIDENCE" || e.status === "REJECTED_INVALID_FORMAT") counts.rejected += 1;
+    }
+    el.statTotal.textContent = entries.length;
+    el.statPaid.textContent = counts.PAID_VALID;
+    el.statUnpaid.textContent = counts.UNPAID_DRIVE_OFF;
+    el.statRejected.textContent = counts.rejected;
+  }
+
+  // --- Object URL lifecycle (red-team finding: memory leak) ------------------------------
+  // `URL.createObjectURL` handles live until explicitly revoked. On every poll, drop any
+  // stored image whose row has scrolled out of the (server-capped) visible ledger window,
+  // so memory usage stays bounded regardless of how long the dashboard runs.
+  function pruneImageStore(currentEntries) {
+    const liveKeys = new Set(currentEntries.map(entryKey));
+    for (const [key, stored] of imageStore) {
+      if (!liveKeys.has(key)) {
+        URL.revokeObjectURL(stored.url);
+        imageStore.delete(key);
+      }
+    }
+  }
+
+  function renderLedger(entries) {
+    pruneImageStore(entries);
+    el.tbody.replaceChildren(...entries.map(renderRow));
+    el.emptyState.classList.toggle("hidden", entries.length > 0);
+    renderStats(entries);
+  }
+
+  window.addEventListener("beforeunload", () => {
+    for (const stored of imageStore.values()) URL.revokeObjectURL(stored.url);
+  });
+
+  // --- Visual Evidence modal + canvas spotlight -------------------------------------------
+  function clamp(value, min, max) {
+    return Math.min(Math.max(value, min), max);
+  }
+
+  function loadImage(url) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error("image failed to load"));
+      img.src = url;
+    });
+  }
+
+  /**
+   * Draws `imgEl` onto `canvas`, darkens the whole frame, and cuts a "spotlight" hole over
+   * `box` (in the ORIGINAL image's pixel coordinates).
+   *
+   * Canvas scaling: the box is in the original image's pixel space, but the canvas is
+   * rendered at a smaller display size to fit the modal, so box coordinates are scaled by
+   * `displaySize / naturalSize` before drawing.
+   *
+   * Layering pitfall (why this uses an offscreen mask canvas): a single <canvas> has no
+   * layers -- it's one flattened pixel buffer. If you draw the image, then draw a
+   * semi-transparent dark rect on top, then call clearRect/destination-out over the plate
+   * region, you erase the ALREADY-COMPOSITED pixels (image + overlay together), leaving a
+   * transparent hole rather than revealing the original image. The fix: build the dark
+   * mask (with its hole already punched via destination-out) on a separate offscreen
+   * canvas first, THEN composite that single finished mask onto the visible canvas that
+   * already has the image drawn beneath it.
+   */
+  function drawSpotlight(canvas, imgEl, box) {
+    const naturalW = imgEl.naturalWidth;
+    const naturalH = imgEl.naturalHeight;
+    if (!naturalW || !naturalH) {
+      throw new Error("stored image has no natural dimensions");
+    }
+
+    const maxW = Math.min(window.innerWidth * 0.85, 900);
+    const maxH = Math.min(window.innerHeight * 0.65, 650);
+    const scale = Math.min(maxW / naturalW, maxH / naturalH, 1); // never upscale past 1:1
+    const displayW = Math.max(1, Math.round(naturalW * scale));
+    const displayH = Math.max(1, Math.round(naturalH * scale));
+
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = Math.round(displayW * dpr);
+    canvas.height = Math.round(displayH * dpr);
+    canvas.style.width = `${displayW}px`;
+    canvas.style.height = `${displayH}px`;
+
+    const ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // draw in CSS-pixel units regardless of DPR
+    ctx.clearRect(0, 0, displayW, displayH);
+    ctx.drawImage(imgEl, 0, 0, displayW, displayH);
+
+    if (!box) return; // no bounding box: show the plain image, no spotlight overlay
+
+    // Scale + clamp the vendor box into display space (clamping guards against a box
+    // that slightly overshoots the image bounds due to vendor rounding).
+    const bx0 = clamp(box.xmin, 0, naturalW) * scale;
+    const by0 = clamp(box.ymin, 0, naturalH) * scale;
+    const bx1 = clamp(box.xmax, 0, naturalW) * scale;
+    const by1 = clamp(box.ymax, 0, naturalH) * scale;
+    const boxW = Math.max(0, bx1 - bx0);
+    const boxH = Math.max(0, by1 - by0);
+
+    const mask = document.createElement("canvas");
+    mask.width = canvas.width;
+    mask.height = canvas.height;
+    const maskCtx = mask.getContext("2d");
+    maskCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    maskCtx.fillStyle = "rgba(0, 0, 0, 0.7)";
+    maskCtx.fillRect(0, 0, displayW, displayH);
+
+    if (boxW > 0 && boxH > 0) {
+      maskCtx.globalCompositeOperation = "destination-out";
+      maskCtx.fillStyle = "rgba(0, 0, 0, 1)";
+      maskCtx.fillRect(bx0, by0, boxW, boxH);
+      maskCtx.globalCompositeOperation = "source-over";
+    }
+
+    ctx.drawImage(mask, 0, 0, displayW, displayH);
+
+    if (boxW > 0 && boxH > 0) {
+      ctx.strokeStyle = "#34d399";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(bx0, by0, boxW, boxH);
+    }
+  }
+
+  let evidenceKeydownHandler = null;
+
+  async function openEvidenceModal(stored, box, plateLabel) {
+    el.evidenceModalPlate.textContent = plateLabel || "Unknown";
+    el.evidenceError.classList.add("hidden");
+    el.evidenceCanvas.classList.remove("hidden");
+    el.evidenceModal.classList.remove("hidden");
+
+    evidenceKeydownHandler = (event) => {
+      if (event.key === "Escape") closeEvidenceModal();
+    };
+    document.addEventListener("keydown", evidenceKeydownHandler);
+
+    try {
+      if (!stored || !stored.url) throw new Error("no stored image for this scan");
+      const img = await loadImage(stored.url);
+      drawSpotlight(el.evidenceCanvas, img, box);
+    } catch (err) {
+      console.error("Failed to render visual evidence:", err);
+      el.evidenceCanvas.classList.add("hidden");
+      el.evidenceError.classList.remove("hidden");
+    }
+  }
+
+  function closeEvidenceModal() {
+    el.evidenceModal.classList.add("hidden");
+    if (evidenceKeydownHandler) {
+      document.removeEventListener("keydown", evidenceKeydownHandler);
+      evidenceKeydownHandler = null;
+    }
+  }
+
+  el.evidenceModalClose.addEventListener("click", closeEvidenceModal);
+
+  // Close on backdrop click, but only when the click target IS the backdrop itself (not
+  // something bubbling up from inside the panel) — no stopPropagation needed on the panel.
+  el.evidenceModal.addEventListener("click", (event) => {
+    if (event.target === el.evidenceModal) closeEvidenceModal();
+  });
+
+  let latestRequestId = 0;
+
+  async function pollLedger() {
+    const requestId = ++latestRequestId;
+    try {
+      const res = await fetch(LEDGER_URL, { cache: "no-store" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      if (requestId !== latestRequestId) return;
+      setConnection(true);
+      renderLedger(data);
+    } catch (err) {
+      if (requestId !== latestRequestId) return;
+      setConnection(false);
+      console.warn("Ledger poll failed:", err);
+    }
+  }
+
+  function validateClientFile(file) {
+    if (!file) return "No file selected.";
+    const type = (file.type || "").toLowerCase();
+    const name = (file.name || "").toLowerCase();
+    const extOk = /\.(jpe?g|png|webp)$/.test(name);
+    if (type && !ALLOWED_TYPES.has(type) && !extOk) {
+      return "Only JPEG, PNG, or WEBP images are accepted.";
+    }
+    if (!type && !extOk) {
+      return "Only JPEG, PNG, or WEBP images are accepted.";
+    }
+    if (file.size > MAX_UPLOAD_BYTES) {
+      return "Image exceeds the 8 MB upload limit.";
+    }
+    if (file.size === 0) {
+      return "The selected file is empty.";
+    }
+    return null;
+  }
+
+  async function uploadFile(file) {
+    if (uploadInFlight) return;
+
+    clearBanners();
+    const clientError = validateClientFile(file);
+    if (clientError) {
+      showError(clientError);
+      return;
+    }
+
+    setLoading(true, file.name);
+
+    const formData = new FormData();
+    formData.append("file", file, file.name);
+    formData.append("location_metadata", el.locationSelect.value || "North Gate - Level 2");
+
+    try {
+      const res = await fetch(UPLOAD_URL, {
+        method: "POST",
+        body: formData,
+      });
+
+      let body = null;
+      try {
+        body = await res.json();
+      } catch {
+        body = null;
+      }
+
+      if (!res.ok) {
+        const detail = (body && body.detail) || `Upload failed (HTTP ${res.status}).`;
+        showError(typeof detail === "string" ? detail : JSON.stringify(detail));
+        return;
+      }
+
+      // Upload endpoint now returns an array of ReconciliationResult objects.
+      const results = Array.isArray(body) ? body : body ? [body] : [];
+      if (!results.length) {
+        showError("No license plate was detected in this image.");
+        return;
+      }
+
+      // Store the source image for any plate that has a bounding box, so the table's
+      // "View" button can later render the spotlight. A FRESH object URL per plate (even
+      // though they share the same underlying File) means each can be revoked
+      // independently later without reference-counting across plates from one image.
+      for (const result of results) {
+        if (result && result.bounding_box) {
+          const url = URL.createObjectURL(file);
+          imageStore.set(entryKey(result), { url, plate: result.plate });
+        }
+      }
+
+      showSuccess(formatMultiVehicleBanner(results));
+      await pollLedger();
+    } catch (err) {
+      console.error("Upload failed:", err);
+      showError("Could not reach the server. Is the backend running?");
+      setConnection(false);
+    } finally {
+      setLoading(false);
+      el.fileInput.value = "";
+    }
+  }
+
+  // --- Drag / drop / click wiring --------------------------------------------------------
+  el.dropZone.addEventListener("click", () => {
+    if (!uploadInFlight) el.fileInput.click();
+  });
+
+  el.dropZone.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      if (!uploadInFlight) el.fileInput.click();
+    }
+  });
+
+  el.fileInput.addEventListener("change", () => {
+    const file = el.fileInput.files && el.fileInput.files[0];
+    if (file) uploadFile(file);
+  });
+
+  el.dropZone.addEventListener("dragenter", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    dragDepth += 1;
+    el.dropZone.classList.add("border-emerald-400", "bg-emerald-500/5");
+  });
+
+  el.dropZone.addEventListener("dragover", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (event.dataTransfer) event.dataTransfer.dropEffect = "copy";
+  });
+
+  el.dropZone.addEventListener("dragleave", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    dragDepth = Math.max(0, dragDepth - 1);
+    if (dragDepth === 0) {
+      el.dropZone.classList.remove("border-emerald-400", "bg-emerald-500/5");
+    }
+  });
+
+  el.dropZone.addEventListener("drop", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    dragDepth = 0;
+    el.dropZone.classList.remove("border-emerald-400", "bg-emerald-500/5");
+
+    const files = event.dataTransfer && event.dataTransfer.files;
+    if (!files || !files.length) {
+      showError("No file was dropped.");
+      return;
+    }
+    uploadFile(files[0]);
+  });
+
+  window.addEventListener("dragover", (event) => event.preventDefault());
+  window.addEventListener("drop", (event) => event.preventDefault());
+
+  pollLedger();
+  setInterval(pollLedger, POLL_INTERVAL_MS);
+})();
+</script>
+</body>
+</html>
